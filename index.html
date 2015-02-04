@@ -11,11 +11,12 @@
   <div class="container" ng-controller="SearchController">
 
   <h1>Angular Movies Apps</h1>
-  <form class="form" ng-submit="search()"x">
+  <form class="form" ng-submit="search()">
     <div class="form-group" ng-class="{'has-error': movies.Error}">
       <label class="control-label">{{movies.Error}}</label>
-      <input type="text" class="form-control" ng-model="searchTerm">
-    </div>
+      <input type="text" ng-model="searchTerm" typeahead="term for term in terms | filter:$viewValue | limitTo:8" class="form-control">
+<!--       ng-change="search()" ng-model-options="{debounce: 300}">
+ -->    </div>
     <div class="btn-group">
         <label class="btn btn-info" ng-change="search()" ng-model="searchType" btn-radio="'movie'" uncheckable>Movie</label>
         <label class="btn btn-info" ng-change="search()" ng-model="searchType" btn-radio="'series'" uncheckable>Series</label>
@@ -26,23 +27,23 @@
 
   <div class="row text-center" ng-show="loading"><img src="http://www.papervisions.com/zoon/root/images/loading.gif"></div>
 
-
   <table class="table table-hover" ng-show="movies.Search">
   <thead>
     <tr>
       <th>Title</th>
       <th>Year</th>
       <th>Type</th>
+      <th></th>
     </tr>
     <tbody>
       <tr ng-repeat="movie in movies.Search">
         <td>{{movie.Title}}</td>
         <td>{{movie.Year}}</td>
         <td><span class="label label-default">{{movie.Type | uppercase}}</td>
+        <td><a href="#" class= "label label-info" ng-click="show(movie.imdbID)">VIEW</a></td>
       </tr>
   </thead>
   </table>
-
 
 </div>
 

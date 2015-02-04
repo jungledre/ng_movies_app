@@ -1,13 +1,22 @@
 var moviesApp = angular.module("MoviesApp", ["ui.bootstrap"])
 
-moviesApp.controller("SearchController", ["$scope", "$http", function($scope, $http){
+moviesApp.controller("SearchController", ["$scope", "$http", "$modal", function($scope, $http, $modal){
+
+    $scope.movies = {}
+    $scope.searchTerm = "";
     $scope.loading = false
+    $scope.selected = undefined;
+
+try {
+  $scope.terms = JSON.parse(window.localStorage.terms || []);
+} catch(e){
+  console.log('error', e);
+  $scope.terms = []
+}
+
 
   $scope.search = function() {
-
     $scope.loading = true
-    $scope.movies = {}
-    // $scope.searchTerm = {}
 
     if ($scope.searchTerm <= 1) {
       $scope.movies.Error = "Must provide more than one character"
@@ -21,9 +30,20 @@ moviesApp.controller("SearchController", ["$scope", "$http", function($scope, $h
       }
     }
     $http(req).success(function(data){
-      $scope.loading = false
-      $scope.movies = data
-    });
 
+      if($scope.terms.indexOf($scope.searchTerm) == -1){
+
+      $scope.terms.push($scope.searchTerm)
+      window.localStorage.terms = JSON.stringify($scope.terms);
+
+      }
+      $scope.movies = data
+      $scope.loading = false
+    });
   }
+
+  if ($scope.searchTerm) {
+    $scope.search();
+  }
+
 }])
